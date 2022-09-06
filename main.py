@@ -23,9 +23,19 @@ def genre_sgd(genre, age):
   random_state = 42)
   clf = SGDClassifier(loss="hinge", penalty="l2", max_iter=1000)
   clf.fit(X_train, Y_train)
-  pred_clf = clf.predict(X_test)
+  #pred_clf = clf.predict(X_test)
   results['score'] = clf.score(X_test, Y_test)
+  pred_arr = create_pred_arr(genre, age)
+  pred_arr.reshape(1, -1)
+  results['sales'] = clf.predict(pred_arr)
   return results
+
+def create_pred_arr(genre, age):
+    pred_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    pred_list[0] = age
+    pred_list[genres[genre] - 1] = 1
+    pred_arr = np.asarray(pred_list)
+    return pred_arr
 
 for key in genres:
   result = genre_sgd(key, 14)
