@@ -76,7 +76,7 @@ def calc_sales(g1, g2, g3, game_age):
     return None
 
 st.write("""
-# Genre sales prediction tool
+# Game Genre Sales Prediction Tool
 
 Select three ***different*** genres and a market age to get predicted sales.
 """)
