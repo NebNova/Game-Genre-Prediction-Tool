@@ -42,7 +42,7 @@ def create_pred_df(genre, age):
     return pred_df
 
 def display_results(pred):
-  sales_str = ('The average estimated sales are: ' + str(round(pred['AvgSales'], 2)))
+  sales_str = ('The average estimated possible sales are: ' + str(round(pred['AvgSales'], 2)))
   acc_str = ('The average prediction accuracy is: ' + str(round(pred['AvgAcc'], 2)) +
   '% with a variance of +/- ' + str(round(pred['AccVar'], 2)) + '%')
   st.write(sales_str)
@@ -76,12 +76,13 @@ st.write("""
 # Game Genre Sales Prediction Tool
 
 Select three ***different*** genres and a market age to get predicted sales.
+Keep in mind that sales predictions are only possible sales, not all video games are a hit.
 """)
 genre1 = st.selectbox('Select first genre.', genre_arr)
 genre2 = st.selectbox('Select second genre.', genre_arr, index=1)
 genre3 = st.selectbox('Select third genre.', genre_arr, index=2)
 selected_age = st.slider('Select a market age for your game.', 1, 25, 5)
-st.button('Predict Game Sales', on_click=calc_sales(genre1, genre2, genre3, selected_age))
+st.button('Predict Possible Game Sales', on_click=calc_sales(genre1, genre2, genre3, selected_age))
 
 age = data['game_age'] 
 fig = plt.figure(figsize=(10, 7))
