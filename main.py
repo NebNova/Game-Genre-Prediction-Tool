@@ -82,7 +82,7 @@ Select three ***different*** genres and a market age to get predicted sales.
 genre1 = st.selectbox('Select first genre.', genre_arr)
 genre2 = st.selectbox('Select second genre.', genre_arr, index=1)
 genre3 = st.selectbox('Select third genre.', genre_arr, index=2)
-selected_age = st.slider('Select a market age for your game.', 1, 10, 5)
+selected_age = st.slider('Select a market age for your game.', 1, 25, 5)
 st.button('Predict Game Sales', on_click=calc_sales(genre1, genre2, genre3, selected_age))
 
 age = data['game_age'] 
