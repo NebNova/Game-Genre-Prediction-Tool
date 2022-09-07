@@ -88,7 +88,7 @@ st.button('Predict Game Sales', on_click=calc_sales(genre1, genre2, genre3, sele
 
 age = data['game_age'] 
 fig = plt.figure(figsize=(10, 7))
-plt.hist(age, edgecolor='black', log=True)
+plt.hist(age, edgecolor='black')
 plt.xlabel("Years on market")
 plt.ylabel("Games")
 plt.title("Games per years on market")
@@ -103,8 +103,16 @@ genre_labels = genre_arr.tolist()
 owners_arr = np.array(owners_list)
 age_arr = np.array(age_list)
 
+def autopct(vals):
+    def genre_autopct(percent):
+        totals = sum(vals)
+        pct_vals = int(round(percent*totals/100.0))
+        return '{p:.2f}%\n({v:d})'.format(p=percent,v=pct_vals)
+    return genre_autopct
+
 fig = plt.figure(figsize=(10, 7))
-plt.pie(owners_arr, labels=genre_labels, autopct='%1.1f%%', startangle=90)
+plt.pie(owners_arr, labels=genre_labels,
+autopct=autopct(owners_list), startangle=90)
 plt.title("Average owners per genre")
 st.pyplot(fig)
 
@@ -114,3 +122,4 @@ plt.xlabel("Genre")
 plt.ylabel("Game Age")
 plt.title("Average age per genre")
 st.pyplot(fig)
+
