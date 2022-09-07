@@ -3,7 +3,6 @@ import numpy as np
 import sklearn as sk
 import matplotlib.pyplot as plt
 import streamlit as st
-import altair as alt
 
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
@@ -12,7 +11,7 @@ data = pd.read_csv("games_final.csv")
 owners_list = []
 age_list = []
 
-genre_arr = np.array(['action', 'adventure', 'casual','early access',
+genre_arr = np.array(['action', 'adventure', 'casual','early_access',
 'indie', 'rpg', 'racing', 'simulation', 'sports', 'strategy'])
 
 genres = {'action': 2, 'adventure': 3, 'casual': 4, 'early_access': 5,
