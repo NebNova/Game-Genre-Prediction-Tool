@@ -64,9 +64,9 @@ def calc_sales(g1, g2, g3, game_age):
     score_results = np.array([result1['score'], result2['score'], result3['score']])
     sales_results = np.array([result1['sales'], result2['sales'], result3['sales']])
     score_avg = np.average(score_results)
-    score_var = (np.max(score_results) - score_avg) - (score_avg - np.min(score_results))
+    score_var = (np.max(score_results) - score_avg) - np.min(score_results)
     sales_avg = np.average(sales_results)
-    sales_var = (np.max(sales_results) - sales_avg) - (sales_avg - np.min(sales_results))
+    sales_var = (np.max(sales_results) - sales_avg) - np.min(sales_results)
     pred_results = {'AvgAcc': score_avg, 'AvgSales': sales_avg,
     'SalesVar': sales_var, 'AccVar': score_var}
     display_results(pred_results)
