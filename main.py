@@ -9,6 +9,8 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
 
 data = pd.read_csv("games_final.csv")
+genre_arr = np.array(['action', 'adventure', 'casual', 'rpg', 'racing',
+ 'early_access', 'indie', 'simulation', 'sports', 'strategy'])
 
 genres = {'action': 2, 'adventure': 3, 'casual': 4, 'early_access': 5,
           'indie': 7, 'rpg': 9,'racing': 10, 'simulation': 11,
@@ -36,15 +38,54 @@ def create_pred_df(genre, age):
     pred_df = pd.DataFrame(pred_dict, index=[0])
     return pred_df
 
+def display_results(pred):
+  sales_str = ('The average estimated sales are: ' + str(round(pred['AvgSales'], 2)) + 
+  ' With a variance of +/- ' + str(round(pred['SalesVar'], 2)))
+  acc_str = ('The average prediction accuracy is: ' + str(round(pred['AvgAcc'], 2)) +
+  '% with a variance of +/- ' + str(round(pred['AccVar'], 2)) + '%')
+  st.write(sales_str)
+  st.write(acc_str)
+  return None
 
-for key in genres:
-  age = 14
-  result = genre_sgd(key, age)
-  result['score'] = result['score'] * 100
-  result['sales'] = np.array2string(result['sales'])
-  result['sales'] = result['sales'].replace('[', '').replace(']', '').replace('.', '')
-  genre = key.replace('_', ' ')
-  print("A game of genre: ", str.title(genre), " that has been on the market for ", age,
-  " years, has predicted sales of: ", result['sales'],
-  " units. With a prediction accuracy of: ",
-  "{0:.2f}".format(result['score']), "%.", sep='')
+def calc_sales(g1, g2, g3, game_age):
+  if g1 != g2 and g2 != g3 and g3 != g1:
+    result1 = genre_sgd(g1, game_age)
+    result2 = genre_sgd(g2, game_age)
+    result3 = genre_sgd(g3, game_age)
+    result_list = [result1, result2, result3]
+    for res in result_list:
+      res['score'] = res['score'] * 100
+      res['sales'] = np.array2string(res['sales'])
+      res['sales'] = res['sales'].replace('[', '').replace(']', '').replace('.', '')
+      res['sales'] = int(res['sales'])
+    score_results = np.array([result1['score'], result2['score'], result3['score']])
+    sale_results = np.array([result1['sales'], result2['sales'], result3['sales']])
+    score_avg = np.average(score_results)
+    score_var = np.max(score_results) - np.min(score_results)
+    sales_avg = np.average(sale_results)
+    sales_var = np.max(sale_results) - np.min(sale_results)
+    pred_results = {'AvgAcc': score_avg, 'AvgSales': sales_avg,
+    'SalesVar': sales_var, 'AccVar': score_var}
+    display_results(pred_results)
+    return None
+  else:
+    st.error('Genre selections must be different!', icon="🚨")
+    return None
+
+#   print("A game of genre: ", str.title(genre), " that has been on the market for ", age,
+#   " years, has predicted sales of: ", result['sales'],
+#   " units. With a prediction accuracy of: ",
+#   "{0:.2f}".format(result['score']), "%.", sep='')
+
+st.write("""
+# Genre sales prediction tool
+
+Select three ***different*** genres and a market age to get predicted sales.
+""")
+genre1 = st.selectbox('Select first genre.', genre_arr)
+genre2 = st.selectbox('Select second genre.', genre_arr, index=1)
+genre3 = st.selectbox('Select third genre.', genre_arr, index=2)
+selected_age = st.slider('Select a market age for your game.', 1, 10, 5)
+st.button('Predict Game Sales', on_click=calc_sales(genre1, genre2, genre3, selected_age))
+
+
