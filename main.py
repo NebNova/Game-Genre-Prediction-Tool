@@ -75,7 +75,7 @@ def calc_sales(g1, g2, g3, game_age):
 st.write("""
 # Game Genre Sales Prediction Tool
 
-Select three ***different*** genres and a market age to get predicted sales.
+Select three ***different*** genres and a market age to get predicted sales.\n
 Keep in mind that sales predictions are only possible sales, not all video games are a hit.
 """)
 genre1 = st.selectbox('Select first genre.', genre_arr)
