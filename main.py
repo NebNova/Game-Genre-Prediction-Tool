@@ -11,8 +11,8 @@ from sklearn.model_selection import train_test_split
 data = pd.read_csv("games_final.csv")
 
 genres = {'action': 2, 'adventure': 3, 'casual': 4, 'early_access': 5,
-          'free_to_play': 6, 'indie': 7, 'massively_multiplayer': 8, 'rpg': 9,
-          'racing': 10, 'simulation': 11, 'sports': 12, 'strategy': 13}
+          'indie': 7, 'rpg': 9,'racing': 10, 'simulation': 11,
+          'sports': 12, 'strategy': 13}
 
 def genre_sgd(genre, age):
   results = {'score': 0, 'sales': 0}
@@ -23,22 +23,28 @@ def genre_sgd(genre, age):
   random_state = 42)
   clf = SGDClassifier(loss="hinge", penalty="l2", max_iter=1000)
   clf.fit(X_train, Y_train)
-  #pred_clf = clf.predict(X_test)
   results['score'] = clf.score(X_test, Y_test)
-  pred_arr = create_pred_arr(genre, age)
-  pred_arr.reshape(1, -1)
-  results['sales'] = clf.predict(pred_arr)
+  results['sales'] = clf.predict(create_pred_df(genre, age))
   return results
 
-def create_pred_arr(genre, age):
-    pred_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    pred_list[0] = age
-    pred_list[genres[genre] - 1] = 1
-    pred_arr = np.asarray(pred_list)
-    return pred_arr
+def create_pred_df(genre, age):
+    pred_dict = {'game_age': 0, 'action': 0, 'adventure': 0, 'casual': 0,
+    'early_access': 0, 'free_to_play': 0, 'indie': 0, 'massively_multiplayer': 0,
+    'rpg' :0, 'racing': 0, 'simulation': 0, 'sports': 0, 'strategy': 0}
+    pred_dict['game_age'] = age
+    pred_dict[genre] = 1
+    pred_df = pd.DataFrame(pred_dict, index=[0])
+    return pred_df
+
 
 for key in genres:
-  result = genre_sgd(key, 14)
+  age = 14
+  result = genre_sgd(key, age)
   result['score'] = result['score'] * 100
-  print(key," has an accuacry of: ", "{0:.2f}".format(result['score']),
-  "%", sep='')
+  result['sales'] = np.array2string(result['sales'])
+  result['sales'] = result['sales'].replace('[', '').replace(']', '').replace('.', '')
+  genre = key.replace('_', ' ')
+  print("A game of genre: ", str.title(genre), " that has been on the market for ", age,
+  " years, has predicted sales of: ", result['sales'],
+  " units. With a prediction accuracy of: ",
+  "{0:.2f}".format(result['score']), "%.", sep='')
