@@ -1,16 +1,19 @@
 import pandas as pd
-import seaborn as sns
 import numpy as np
 import sklearn as sk
 import matplotlib.pyplot as plt
 import streamlit as st
+import altair as alt
 
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
 
 data = pd.read_csv("games_final.csv")
-genre_arr = np.array(['action', 'adventure', 'casual', 'rpg', 'racing',
- 'early_access', 'indie', 'simulation', 'sports', 'strategy'])
+owners_list = []
+age_list = []
+
+genre_arr = np.array(['action', 'adventure', 'casual','early access',
+'indie', 'rpg', 'racing', 'simulation', 'sports', 'strategy'])
 
 genres = {'action': 2, 'adventure': 3, 'casual': 4, 'early_access': 5,
           'indie': 7, 'rpg': 9,'racing': 10, 'simulation': 11,
@@ -72,11 +75,6 @@ def calc_sales(g1, g2, g3, game_age):
     st.error('Genre selections must be different!', icon="🚨")
     return None
 
-#   print("A game of genre: ", str.title(genre), " that has been on the market for ", age,
-#   " years, has predicted sales of: ", result['sales'],
-#   " units. With a prediction accuracy of: ",
-#   "{0:.2f}".format(result['score']), "%.", sep='')
-
 st.write("""
 # Genre sales prediction tool
 
@@ -88,4 +86,31 @@ genre3 = st.selectbox('Select third genre.', genre_arr, index=2)
 selected_age = st.slider('Select a market age for your game.', 1, 10, 5)
 st.button('Predict Game Sales', on_click=calc_sales(genre1, genre2, genre3, selected_age))
 
+age = data['game_age'] 
+fig = plt.figure(figsize=(10, 7))
+plt.hist(age, edgecolor='black', log=True)
+plt.xlabel("Years on market")
+plt.ylabel("Games")
+plt.title("Games per years on market")
+st.pyplot(fig)
 
+for key in genres:
+  genre_df = data[data[key] == 1.0]
+  owners_list.append(genre_df['mean_owners'].mean())
+  age_list.append(genre_df['game_age'].mean())
+
+genre_labels = genre_arr.tolist()
+owners_arr = np.array(owners_list)
+age_arr = np.array(age_list)
+
+fig = plt.figure(figsize=(10, 7))
+plt.pie(owners_arr, labels=genre_labels, autopct='%1.1f%%', startangle=90)
+plt.title("Average owners per genre")
+st.pyplot(fig)
+
+fig = plt.figure(figsize=(10, 7))
+plt.bar(genre_arr, age_arr)
+plt.xlabel("Genre")
+plt.ylabel("Game Age")
+plt.title("Average age per genre")
+st.pyplot(fig)
