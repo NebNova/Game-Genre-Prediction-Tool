@@ -1,4 +1,4 @@
-# Capstone
+# Graduation Project
 WGU BS Comp Sci final project
 
 This Project uses a data set taken form the following link on Kaggle.com
