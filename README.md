@@ -1,5 +1,4 @@
-# Graduation Project
-WGU BS Comp Sci final project
+# Game Genre Prediction Tool
 
 This Project uses a data set taken form the following link on Kaggle.com
 https://www.kaggle.com/datasets/fronkongames/steam-games-dataset
